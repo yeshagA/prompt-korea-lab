@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CheckCircle, Shield, BookOpen, ArrowRight, GraduationCap, Briefcase, Users } from "lucide-react";
+import heroIllustration from "@/assets/hero-illustration.png";
 
 const trustBadges = [
   { icon: BookOpen, label: "무료 학습" },
