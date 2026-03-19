@@ -40,7 +40,7 @@ const Home = () => (
               한국형 AI 프롬프팅 학습 플랫폼
             </span>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
-              한국을 위한<br />Learn Prompting Test
+              한국을 위한<br />Learn Prompting
             </h1>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
               학생, 취업준비생, 실무자와 팀을 위한 실전형 AI 프롬프팅 학습 경험을 제공합니다.
