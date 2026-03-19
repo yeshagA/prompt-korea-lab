@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CheckCircle, Shield, BookOpen, ArrowRight, GraduationCap, Briefcase, Users } from "lucide-react";
+import heroIllustration from "@/assets/hero-illustration.png";
 
 const trustBadges = [
   { icon: BookOpen, label: "무료 학습" },
@@ -33,31 +34,36 @@ const Home = () => (
     {/* Hero */}
     <section className="section-padding bg-card">
       <div className="container-main">
-        <div className="max-w-2xl">
-          <span className="inline-block text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full mb-6">
-            한국형 AI 프롬프팅 학습 플랫폼
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
-            한국을 위한<br />Learn Prompting
-          </h1>
-          <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
-            학생, 취업준비생, 실무자와 팀을 위한 실전형 AI 프롬프팅 학습 경험을 제공합니다.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/learn">
-              <Button size="lg">학습 시작하기</Button>
-            </Link>
-            <Link to="/roadmap">
-              <Button variant="outline" size="lg">로드맵 보기</Button>
-            </Link>
+        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+          <div className="flex-1 min-w-0">
+            <span className="inline-block text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full mb-6">
+              한국형 AI 프롬프팅 학습 플랫폼
+            </span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
+              한국을 위한<br />Learn Prompting
+            </h1>
+            <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
+              학생, 취업준비생, 실무자와 팀을 위한 실전형 AI 프롬프팅 학습 경험을 제공합니다.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link to="/learn">
+                <Button size="lg">학습 시작하기</Button>
+              </Link>
+              <Link to="/roadmap">
+                <Button variant="outline" size="lg">로드맵 보기</Button>
+              </Link>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-4">
+              {trustBadges.map((b) => (
+                <div key={b.label} className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <b.icon className="h-4 w-4 text-accent" />
+                  <span>{b.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="mt-8 flex flex-wrap gap-4">
-            {trustBadges.map((b) => (
-              <div key={b.label} className="flex items-center gap-2 text-sm text-muted-foreground">
-                <b.icon className="h-4 w-4 text-accent" />
-                <span>{b.label}</span>
-              </div>
-            ))}
+          <div className="flex-shrink-0 w-full max-w-xs sm:max-w-sm lg:max-w-md">
+            <img src={heroIllustration} alt="AI 프롬프팅 학습 플랫폼 일러스트레이션" className="w-full h-auto" />
           </div>
         </div>
       </div>
