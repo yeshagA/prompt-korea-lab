@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { CheckCircle, Shield, BookOpen, ArrowRight } from "lucide-react";
+import { CheckCircle, Shield, BookOpen, ArrowRight, GraduationCap, Briefcase, Users } from "lucide-react";
 
 const trustBadges = [
   { icon: BookOpen, label: "무료 학습" },
@@ -10,22 +10,22 @@ const trustBadges = [
 ];
 
 const personas = [
-  { title: "학생", desc: "기초부터 차근차근 배우고 과제, 보고서, 학습에 활용", cta: "학생 경로 보기", path: "/paths" },
-  { title: "취업준비생", desc: "실무형 프롬프팅을 익혀 자기소개서, 리서치, 업무 문서에 활용", cta: "취업준비생 경로 보기", path: "/paths" },
-  { title: "기업 / 팀", desc: "팀 생산성과 업무 효율을 높이는 AI 활용 학습", cta: "기업 경로 보기", path: "/paths" },
+  { title: "학생", icon: GraduationCap, desc: "기초부터 차근차근 배우고 과제, 보고서, 학습에 바로 활용할 수 있습니다.", cta: "학생 경로 보기", path: "/paths" },
+  { title: "취업준비생", icon: Briefcase, desc: "실무형 프롬프팅을 익혀 자기소개서, 리서치, 업무 문서 준비에 활용할 수 있습니다.", cta: "취업준비생 경로 보기", path: "/paths" },
+  { title: "기업 / 팀", icon: Users, desc: "팀 생산성과 업무 효율을 높이는 AI 활용 학습 경로를 제공합니다.", cta: "기업 경로 보기", path: "/paths" },
 ];
 
 const roadmaps = [
-  { days: "7일", target: "입문자 / 학생", goal: "빠르게 핵심 개념 이해하기" },
-  { days: "14일", target: "취업준비생 / 실무 입문자", goal: "실전형 업무 활용 익히기" },
-  { days: "30일", target: "심화 학습자 / 팀", goal: "체계적으로 프롬프팅 역량 확장하기" },
+  { days: "7일", desc: "입문자와 학생을 위한 빠른 시작 플랜" },
+  { days: "14일", desc: "취업준비생과 실무 입문자를 위한 실전 플랜" },
+  { days: "30일", desc: "심화 학습자와 팀을 위한 체계적 확장 플랜" },
 ];
 
 const examples = [
-  "카카오형 고객응대 프롬프트",
-  "네이버형 콘텐츠 / 검색 활용",
-  "쿠팡형 이커머스 업무",
-  "삼성형 오피스 생산성 업무",
+  { title: "카카오형 고객응대", desc: "카카오톡 채널 고객 응대에 활용할 수 있는 프롬프트 예시" },
+  { title: "네이버형 콘텐츠 정리", desc: "블로그, 스마트스토어 등 콘텐츠 작성과 정리에 활용" },
+  { title: "쿠팡형 상품 설명 작성", desc: "이커머스 상품 설명, 리뷰 분석 등 판매 업무에 활용" },
+  { title: "삼성형 회의 요약 및 보고서", desc: "기업 환경에서의 회의록 정리 및 보고서 작성에 활용" },
 ];
 
 const Home = () => (
@@ -67,10 +67,14 @@ const Home = () => (
     <section className="section-padding">
       <div className="container-main">
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground">누구를 위한 학습인가요?</h2>
+        <p className="mt-2 text-sm text-muted-foreground">사용자 목적에 맞는 학습 시작점을 선택할 수 있습니다.</p>
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
           {personas.map((p) => (
             <div key={p.title} className="bg-card rounded-lg border p-6 flex flex-col justify-between transition-shadow duration-200 hover:shadow-sm">
               <div>
+                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                  <p.icon className="h-5 w-5 text-primary" />
+                </div>
                 <h3 className="text-lg font-semibold text-foreground">{p.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
               </div>
@@ -87,12 +91,14 @@ const Home = () => (
     <section className="section-padding bg-card">
       <div className="container-main">
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground">7일, 14일, 30일 학습 플랜</h2>
+        <p className="mt-2 text-sm text-muted-foreground">시간과 목표에 맞는 학습 플랜을 선택해 빠르게 시작하세요.</p>
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
           {roadmaps.map((r) => (
-            <div key={r.days} className="bg-background rounded-lg border p-6">
-              <div className="text-2xl font-bold text-primary">{r.days} 플랜</div>
-              <p className="mt-3 text-xs font-medium text-muted-foreground">추천 대상: {r.target}</p>
-              <p className="mt-2 text-sm text-foreground">{r.goal}</p>
+            <div key={r.days} className="bg-background rounded-lg border p-6 flex flex-col justify-between">
+              <div>
+                <div className="text-2xl font-bold text-primary">{r.days} 플랜</div>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{r.desc}</p>
+              </div>
               <Link to="/roadmap" className="mt-5 inline-flex items-center text-sm font-medium text-primary hover:underline">
                 플랜 보기 <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
@@ -106,10 +112,12 @@ const Home = () => (
     <section className="section-padding">
       <div className="container-main">
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground">한국 실무와 가까운 예시로 배우기</h2>
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <p className="mt-2 text-sm text-muted-foreground">한국 사용자에게 익숙한 업무와 상황을 기반으로 실전 예시를 제공합니다.</p>
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-5">
           {examples.map((ex) => (
-            <Link to="/examples" key={ex} className="bg-card rounded-lg border p-5 hover:shadow-sm transition-shadow duration-200">
-              <p className="text-sm font-semibold text-foreground">{ex}</p>
+            <Link to="/examples" key={ex.title} className="bg-card rounded-lg border p-5 hover:shadow-sm transition-shadow duration-200">
+              <p className="text-sm font-semibold text-foreground">{ex.title}</p>
+              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{ex.desc}</p>
             </Link>
           ))}
         </div>
