@@ -1,3 +1,8 @@
+import SignUpPage from "./pages/SignUpPage";
+import { AuthProvider } from "@/context/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import LoginPage from "./pages/LoginPage";
+import ProfileSetupPage from "./pages/ProfileSetupPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -9,6 +14,7 @@ import JobSeekerPage from "./pages/JobSeekerPage";
 import EmployeePage from "./pages/EmployeePage";
 import PlaygroundPage from "./pages/PlaygroundPage";
 import DashboardPage from "./pages/DashboardPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import LearnPage from "./pages/LearnPage";
 import PersonaPathsPage from "./pages/PersonaPathsPage";
 import RoadmapPage from "./pages/RoadmapPage";
@@ -22,17 +28,44 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <AuthProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/learn" element={<LearnPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile-setup" element={<ProfileSetupPage />} />
           <Route path="/student" element={<StudentPage />} />
           <Route path="/job-seeker" element={<JobSeekerPage />} />
+          <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/employee" element={<EmployeePage />} />
-          <Route path="/playground" element={<PlaygroundPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route
+            path="/playground"
+            element={
+              <ProtectedRoute>
+                <PlaygroundPage />
+              </ProtectedRoute>
+            }
+          />    
+
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <AnalyticsPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/paths" element={<PersonaPathsPage />} />
           <Route path="/roadmap" element={<RoadmapPage />} />
           <Route path="/examples" element={<ExamplesPage />} />
@@ -41,6 +74,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
