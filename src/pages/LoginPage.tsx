@@ -17,7 +17,7 @@ const LoginPage = () => {
     const success = signIn(email, password);
 
     if (!success) {
-      alert("Invalid email or password.");
+      alert("이메일 또는 비밀번호가 올바르지 않습니다.");
       return;
     }
 
@@ -28,14 +28,14 @@ const LoginPage = () => {
     <Layout>
       <section className="section-padding">
         <div className="container-main max-w-md mx-auto">
-          <h1 className="text-3xl font-bold text-foreground">Log In</h1>
+          <h1 className="text-3xl font-bold text-foreground">로그인</h1>
           <p className="mt-3 text-muted-foreground">
-            Enter your email and password to continue.
+            이메일과 비밀번호를 입력하여 계속하세요.
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4 bg-card rounded-xl border p-6">
             <div>
-              <label className="text-sm font-medium">Email</label>
+              <label className="text-sm font-medium">이메일</label>
               <input
                 type="email"
                 className="mt-2 w-full rounded-lg border bg-background p-3 text-sm"
@@ -47,26 +47,26 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <label className="text-sm font-medium">Password</label>
+              <label className="text-sm font-medium">비밀번호</label>
               <input
                 type="password"
                 className="mt-2 w-full rounded-lg border bg-background p-3 text-sm"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder="비밀번호를 입력하세요"
                 required
               />
             </div>
 
             <Button type="submit" className="w-full">
-              Log In
+              로그인
             </Button>
           </form>
 
           <p className="mt-4 text-sm text-center text-muted-foreground">
-            Don’t have an account?{" "}
+            계정이 없으신가요?{" "}
             <Link to="/sign-up" className="text-primary hover:underline">
-              Sign Up
+              회원가입
             </Link>
           </p>
         </div>

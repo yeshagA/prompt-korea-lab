@@ -19,42 +19,44 @@ const SignUpPage = () => {
     /[0-9]/.test(password);
 
   const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!passwordValid) {
-    alert("Password must be at least 8 characters and include uppercase, lowercase, and a number.");
-    return;
-  }
+    if (!passwordValid) {
+      alert("비밀번호는 최소 8자 이상이며, 대문자, 소문자, 숫자를 각각 1개 이상 포함해야 합니다.");
+      return;
+    }
 
-  if (password !== confirmPassword) {
-    alert("Passwords do not match.");
-    return;
-  }
+    if (password !== confirmPassword) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
 
-  signUp(email, password);
-  navigate("/profile-setup");
-};
+    signUp(email, password);
+    navigate("/profile-setup");
+  };
 
   return (
     <Layout>
       <section className="section-padding">
         <div className="container-main max-w-md mx-auto">
-          <h1 className="text-3xl font-bold text-foreground">Sign Up</h1>
+          <h1 className="text-3xl font-bold text-foreground">회원가입</h1>
           <p className="mt-3 text-muted-foreground">
-            Create your account to access courses, dashboard, analytics, and prompt playground.
+            계정을 만들어 강의, 대시보드, 분석, 프롬프트 실습을 이용하세요.
           </p>
 
           <div className="mt-8 space-y-3">
-            <Button variant="outline" className="w-full">Continue with Google</Button>
-            <Button variant="outline" className="w-full">Continue with Kakao</Button>
-            <Button variant="outline" className="w-full">Continue with Naver</Button>
+            <Button variant="outline" className="w-full">Google로 계속하기</Button>
+            <Button variant="outline" className="w-full">카카오로 계속하기</Button>
+            <Button variant="outline" className="w-full">네이버로 계속하기</Button>
           </div>
 
-          <div className="my-6 text-center text-sm text-muted-foreground">or sign up with email</div>
+          <div className="my-6 text-center text-sm text-muted-foreground">
+            또는 이메일로 가입하기
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 bg-card rounded-xl border p-6">
             <div>
-              <label className="text-sm font-medium">Email</label>
+              <label className="text-sm font-medium">이메일</label>
               <input
                 type="email"
                 className="mt-2 w-full rounded-lg border bg-background p-3 text-sm"
@@ -66,41 +68,41 @@ const SignUpPage = () => {
             </div>
 
             <div>
-              <label className="text-sm font-medium">Password</label>
+              <label className="text-sm font-medium">비밀번호</label>
               <input
                 type="password"
                 className="mt-2 w-full rounded-lg border bg-background p-3 text-sm"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Create a password"
+                placeholder="비밀번호를 만들어주세요"
                 required
               />
               <p className="mt-2 text-xs text-muted-foreground">
-                Must be at least 8 characters and include 1 uppercase letter, 1 lowercase letter, and 1 number.
+                최소 8자 이상, 대문자 1개, 소문자 1개, 숫자 1개를 포함해야 합니다.
               </p>
             </div>
 
             <div>
-              <label className="text-sm font-medium">Confirm Password</label>
+              <label className="text-sm font-medium">비밀번호 확인</label>
               <input
                 type="password"
                 className="mt-2 w-full rounded-lg border bg-background p-3 text-sm"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm your password"
+                placeholder="비밀번호를 다시 입력하세요"
                 required
               />
             </div>
 
             <Button type="submit" className="w-full">
-              Create Account
+              계정 만들기
             </Button>
           </form>
 
           <p className="mt-4 text-sm text-center text-muted-foreground">
-            Already have an account?{" "}
+            이미 계정이 있으신가요?{" "}
             <Link to="/login" className="text-primary hover:underline">
-              Log In
+              로그인
             </Link>
           </p>
         </div>
