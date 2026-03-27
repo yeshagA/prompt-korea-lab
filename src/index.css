@@ -72,3 +72,15 @@
     @apply max-w-6xl mx-auto;
   }
 }
+
+/* ── Persona Cards Scroll Animation ── */
+.persona-card {
+  opacity: 0;
+  transform: translateY(2rem);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.card-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -18,61 +18,86 @@ const userGroups = [
     icon: GraduationCap,
     desc: "과제, 발표, 학습 정리, 시험 대비를 위한 AI 활용 학습",
     path: "/student",
+    image: "/student.jpg",
   },
   {
     title: "취업준비생",
     icon: Briefcase,
     desc: "자기소개서, 면접 준비, 리서치, 문서 작성을 위한 실전형 AI 활용",
     path: "/job-seeker",
+    image: "/jobseeker.jpg",
   },
   {
     title: "직장인 / 기업 구성원",
     icon: Building2,
     desc: "회의 요약, 보고서 작성, 업무 자동화, 생산성 향상을 위한 AI 활용",
     path: "/employee",
+    image: "/worker.jpg",
   },
 ];
 
 const Home = () => {
   const heroRef = useRef<HTMLHeadingElement>(null);
 
-useEffect(() => {
-  const triggerAnimation = () => {
-    if (!heroRef.current) return;
-    const spans = heroRef.current.querySelectorAll("span[data-word]");
-    spans.forEach((span, i) => {
-      const el = span as HTMLElement;
-      el.style.animation = "none";
-      el.style.opacity = "0";
-      void el.offsetWidth;
-      setTimeout(() => {
-        el.style.animation = "";
-        el.style.animationDelay = `${i * 0.3}s`;
-      }, 10);
-    });
-  };
+  // hero title animation — tab switch + scroll to top
+  useEffect(() => {
+    const triggerAnimation = () => {
+      if (!heroRef.current) return;
+      const spans = heroRef.current.querySelectorAll("span[data-word]");
+      spans.forEach((span, i) => {
+        const el = span as HTMLElement;
+        el.style.animation = "none";
+        el.style.opacity = "0";
+        void el.offsetWidth;
+        setTimeout(() => {
+          el.style.animation = "";
+          el.style.animationDelay = `${i * 0.3}s`;
+        }, 10);
+      });
+    };
 
-  // tab switching
-  const handleVisibility = () => {
-    if (document.visibilityState === "visible") triggerAnimation();
-  };
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") triggerAnimation();
+    };
 
-  // scroll back to top
-  const handleScroll = () => {
-    if (window.scrollY < 100) triggerAnimation();
-  };
+    const handleScroll = () => {
+      if (window.scrollY < 100) triggerAnimation();
+    };
 
-  document.addEventListener("visibilitychange", handleVisibility);
-  window.addEventListener("scroll", handleScroll);
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("scroll", handleScroll);
 
-  return () => {
-    document.removeEventListener("visibilitychange", handleVisibility);
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // persona cards scroll-appear animation
+  useEffect(() => {
+    const cards = document.querySelectorAll(".persona-card");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              (entry.target as HTMLElement).classList.add("card-visible");
+            }, i * 150);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    cards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <Layout>
+
+      {/* ── Hero Section ── */}
       <section className="section-padding bg-card">
         <div className="container-main text-center max-w-4xl mx-auto">
           <h1
@@ -114,6 +139,7 @@ useEffect(() => {
             학생, 취업준비생, 직장인을 위한 한국형 AI 학습, 프롬프트 실습, 인증 경험을 제공합니다.
           </p>
 
+          {/* ── Hero buttons — original untouched ── */}
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link to="/learn">
               <Button size="lg">무료로 시작하기</Button>
@@ -125,6 +151,7 @@ useEffect(() => {
         </div>
       </section>
 
+      {/* ── Who Is This For ── */}
       <section className="section-padding">
         <div className="container-main">
           <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
@@ -138,24 +165,45 @@ useEffect(() => {
             {userGroups.map((group) => (
               <div
                 key={group.title}
-                className="bg-card rounded-xl border p-6 hover:shadow-sm transition-shadow duration-200"
+                className="persona-card relative rounded-xl border overflow-hidden h-72 group"
               >
-                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <group.icon className="h-6 w-6 text-primary" />
+                {/* background photo */}
+                <img
+                  src={group.image}
+                  alt={group.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+
+                {/* dark overlay */}
+                <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors duration-500" />
+
+                {/* content */}
+                <div className="relative z-10 p-6 flex flex-col justify-end h-full">
+                  <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4">
+                    <group.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white">{group.title}</h3>
+                  <p className="mt-2 text-sm text-white/80 leading-relaxed">
+                    {group.desc}
+                  </p>
+                  <Link to={group.path} className="mt-5 inline-block">
+                    {/* ── Card button — always black text, white bg ── */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-black border-white bg-white hover:bg-white/80"
+                    >
+                      자세히 보기
+                    </Button>
+                  </Link>
                 </div>
-                <h3 className="text-lg font-semibold text-foreground">{group.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  {group.desc}
-                </p>
-                <Link to={group.path} className="mt-5 inline-block">
-                  <Button variant="outline" size="sm">자세히 보기</Button>
-                </Link>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ── Prompt Playground ── */}
       <section className="section-padding bg-card">
         <div className="container-main">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
@@ -188,6 +236,7 @@ useEffect(() => {
         </div>
       </section>
 
+      {/* ── Dashboard & Analytics ── */}
       <section className="section-padding">
         <div className="container-main">
           <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
@@ -233,6 +282,7 @@ useEffect(() => {
         </div>
       </section>
 
+      {/* ── Certificate Verify ── */}
       <section className="section-padding bg-card">
         <div className="container-main text-center max-w-2xl mx-auto">
           <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto">
@@ -258,6 +308,7 @@ useEffect(() => {
           </Link>
         </div>
       </section>
+
     </Layout>
   );
 };
