@@ -101,9 +101,10 @@ const Home = () => {
     };
   }, []);
 
-  // 2. persona cards animation
+  // 2. persona cards animation — repeats every time
   useEffect(() => {
     const cards = document.querySelectorAll(".persona-card");
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry, i) => {
@@ -111,16 +112,20 @@ const Home = () => {
             setTimeout(() => {
               (entry.target as HTMLElement).classList.add("card-visible");
             }, i * 150);
+          } else {
+            // reset when out of view so it replays on scroll back
+            (entry.target as HTMLElement).classList.remove("card-visible");
           }
         });
       },
       { threshold: 0.2 }
     );
+
     cards.forEach((card) => observer.observe(card));
     return () => observer.disconnect();
   }, []);
 
-  // 3. playground typing animation
+  // 3. playground typing animation — repeats every time
   useEffect(() => {
     const prompt = "이 자기소개서를 더 명확하고 전문적으로 다듬어줘.";
     const response = "네! 더 명확한 구조와 전문적인 어조로 다듬어 드릴게요. 첫 문장부터 핵심 역량을 강조하고, 구체적인 경험을 중심으로 재구성했습니다.";
@@ -182,14 +187,31 @@ const Home = () => {
       typeChar();
     };
 
+    const resetAnimation = () => {
+      clearTimeout(typingTimeout);
+      clearInterval(cursorInterval);
+      setTypedText("");
+      setShowCursor(false);
+      setShowResponse(false);
+      setResponseText("");
+      setShowResponseCursor(false);
+      setPlaygroundVisible(false);
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) startAnimation();
+          if (entry.isIntersecting) {
+            startAnimation();
+          } else {
+            // reset when scrolled away so it replays
+            resetAnimation();
+          }
         });
       },
       { threshold: 0.3 }
     );
+
     observer.observe(section);
     return () => {
       observer.disconnect();
@@ -198,7 +220,7 @@ const Home = () => {
     };
   }, []);
 
-  // 4. dashboard counters + bars animation
+  // 4. dashboard counters + bars — repeats every time
   useEffect(() => {
     const section = dashboardRef.current;
     if (!section) return;
@@ -208,13 +230,10 @@ const Home = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setDashboardVisible(true);
-
-            // animate bars
             setTimeout(() => {
               setBarWidths([72, 66, 65, 100]);
             }, 200);
 
-            // animate counters
             const targets = [72, 8, 65, 24];
             targets.forEach((target, idx) => {
               let current = 0;
@@ -232,16 +251,22 @@ const Home = () => {
                 });
               }, 30);
             });
+          } else {
+            // reset when scrolled away so it replays
+            setDashboardVisible(false);
+            setBarWidths([0, 0, 0, 0]);
+            setCounts([0, 0, 0, 0]);
           }
         });
       },
       { threshold: 0.3 }
     );
+
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
 
-  // 5. certificate fade-in animation
+  // 5. certificate fade-in — repeats every time
   useEffect(() => {
     const section = certRef.current;
     if (!section) return;
@@ -249,11 +274,17 @@ const Home = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) setCertVisible(true);
+          if (entry.isIntersecting) {
+            setCertVisible(true);
+          } else {
+            // reset when scrolled away so it replays
+            setCertVisible(false);
+          }
         });
       },
       { threshold: 0.3 }
     );
+
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
@@ -412,8 +443,6 @@ const Home = () => {
           </p>
 
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            {/* Dashboard card */}
             <div className={`bg-card rounded-xl border p-6 transition-all duration-700 delay-200 ${dashboardVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <LayoutDashboard className="h-6 w-6 text-primary" />
@@ -451,7 +480,6 @@ const Home = () => {
               </Link>
             </div>
 
-            {/* Analytics card */}
             <div className={`bg-card rounded-xl border p-6 transition-all duration-700 delay-300 ${dashboardVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <BarChart3 className="h-6 w-6 text-primary" />
@@ -481,7 +509,6 @@ const Home = () => {
                 <Button variant="outline" size="sm">분석 보기</Button>
               </Link>
             </div>
-
           </div>
         </div>
       </section>
