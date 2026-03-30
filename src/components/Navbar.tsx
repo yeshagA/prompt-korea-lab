@@ -7,9 +7,8 @@ import { useAuth } from "@/context/AuthContext";
 const navItems = [
   { label: "학습하기", path: "/learn" },
   { label: "로드맵", path: "/roadmap" },
-  { label: "활용 예시", path: "/examples" },
+  { label: "프롬프트 갤러리", path: "/examples" },
   { label: "인증 확인", path: "/verify" },
-  { label: "프로젝트 소개", path: "/about" },
 ];
 
 const Navbar = () => {

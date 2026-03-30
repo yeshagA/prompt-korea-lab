@@ -20,7 +20,6 @@ import PersonaPathsPage from "./pages/PersonaPathsPage";
 import RoadmapPage from "./pages/RoadmapPage";
 import ExamplesPage from "./pages/ExamplesPage";
 import VerifyPage from "./pages/VerifyPage";
-import AboutPage from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -70,7 +69,6 @@ const App = () => (
           <Route path="/roadmap" element={<RoadmapPage />} />
           <Route path="/examples" element={<ExamplesPage />} />
           <Route path="/verify" element={<VerifyPage />} />
-          <Route path="/about" element={<AboutPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
