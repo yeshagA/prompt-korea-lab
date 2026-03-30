@@ -1,6 +1,6 @@
 import SignUpPage from "./pages/SignUpPage";
+import ScrollToTop from "@/components/ScrollToTop";
 import { AuthProvider } from "@/context/AuthContext";
-import ProtectedRoute from "@/components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import ProfileSetupPage from "./pages/ProfileSetupPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -28,50 +28,29 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/learn" element={<LearnPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/profile-setup" element={<ProfileSetupPage />} />
-          <Route path="/student" element={<StudentPage />} />
-          <Route path="/job-seeker" element={<JobSeekerPage />} />
-          <Route path="/sign-up" element={<SignUpPage />} />
-          <Route path="/employee" element={<EmployeePage />} />
-          <Route
-            path="/playground"
-            element={
-              <ProtectedRoute>
-                <PlaygroundPage />
-              </ProtectedRoute>
-            }
-          />    
-
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analytics"
-            element={
-              <ProtectedRoute>
-                <AnalyticsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/paths" element={<PersonaPathsPage />} />
-          <Route path="/roadmap" element={<RoadmapPage />} />
-          <Route path="/examples" element={<ExamplesPage />} />
-          <Route path="/verify" element={<VerifyPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+        <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/learn" element={<LearnPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/profile-setup" element={<ProfileSetupPage />} />
+            <Route path="/student" element={<StudentPage />} />
+            <Route path="/job-seeker" element={<JobSeekerPage />} />
+            <Route path="/sign-up" element={<SignUpPage />} />
+            <Route path="/employee" element={<EmployeePage />} />
+            <Route path="/playground" element={<PlaygroundPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route path="/paths" element={<PersonaPathsPage />} />
+            <Route path="/roadmap" element={<RoadmapPage />} />
+            <Route path="/examples" element={<ExamplesPage />} />
+            <Route path="/verify" element={<VerifyPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>

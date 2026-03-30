@@ -630,7 +630,6 @@ const Home = () => {
                       <h3 className="mt-3 text-base font-bold text-foreground">{course.title}</h3>
                       <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{course.desc}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-4">👆 hover하여 자세히 보기</p>
                   </div>
                   <div className={`flip-card-back ${course.backColor} flex flex-col justify-between`}>
                     <div>
