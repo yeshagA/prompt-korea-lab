@@ -1,80 +1,15 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Lock, CheckCircle, ChevronRight } from "lucide-react";
 
-const categories = [
-  {
-    title: "입문",
-    desc: "프롬프팅이란 무엇인지 기본 개념을 알아봅니다.",
-    level: "Lv.1",
-    emoji: "🌱",
-    badgeColor: "bg-green-100 text-green-700",
-    borderColor: "border-green-400",
-    barColor: "bg-green-500",
-    difficulty: "입문",
-    difficultyColor: "text-green-600",
-    topics: ["프롬프트란?", "AI 기본 이해", "첫 번째 프롬프트"],
-    image: "/lv1.jpg",
-  },
-  {
-    title: "기초 프롬프팅",
-    desc: "좋은 프롬프트를 만드는 기본 원리와 구조를 배웁니다.",
-    level: "Lv.2",
-    emoji: "📘",
-    badgeColor: "bg-blue-100 text-blue-700",
-    borderColor: "border-blue-400",
-    barColor: "bg-blue-500",
-    difficulty: "초급",
-    difficultyColor: "text-blue-600",
-    topics: ["명확한 지시", "맥락 제공", "역할 설정"],
-    image: "/lv2.jpg",
-  },
-  {
-    title: "실전 활용",
-    desc: "업무, 학습, 문서 작성 등 실무에 적용합니다.",
-    level: "Lv.3",
-    emoji: "⚡",
-    badgeColor: "bg-yellow-100 text-yellow-700",
-    borderColor: "border-yellow-400",
-    barColor: "bg-yellow-500",
-    difficulty: "중급",
-    difficultyColor: "text-yellow-600",
-    topics: ["업무 자동화", "문서 작성", "이메일 작성"],
-    image: "/lv3.jpg",
-  },
-  {
-    title: "고급 기법",
-    desc: "체인 오브 소트, 멀티스텝 등 고급 기법을 익힙니다.",
-    level: "Lv.4",
-    emoji: "🔥",
-    badgeColor: "bg-orange-100 text-orange-700",
-    borderColor: "border-orange-400",
-    barColor: "bg-orange-500",
-    difficulty: "고급",
-    difficultyColor: "text-orange-600",
-    topics: ["Chain of Thought", "Few-shot", "멀티스텝"],
-    image: "/lv4.jpg",
-  },
-  {
-    title: "윤리와 검증",
-    desc: "AI 활용의 윤리적 측면과 결과 검증 방법을 다룹니다.",
-    level: "Lv.5",
-    emoji: "🛡️",
-    badgeColor: "bg-red-100 text-red-700",
-    borderColor: "border-red-400",
-    barColor: "bg-red-500",
-    difficulty: "전문가",
-    difficultyColor: "text-red-600",
-    topics: ["AI 윤리", "결과 검증", "책임있는 AI"],
-    image: "/lv5.jpg",
-  },
-];
-
 const LearnPage = () => {
   const { isLoggedIn } = useAuth();
+  const { copy } = useI18n();
+  const categories = copy.learn.categories;
   const [visibleCards, setVisibleCards] = useState<boolean[]>(
     new Array(categories.length).fill(false)
   );
@@ -84,6 +19,10 @@ const LearnPage = () => {
   useEffect(() => {
     setHeroVisible(true);
   }, []);
+
+  useEffect(() => {
+    setVisibleCards(new Array(categories.length).fill(false));
+  }, [categories.length]);
 
   useEffect(() => {
     const cards = document.querySelectorAll(".learn-card");
@@ -137,19 +76,17 @@ const LearnPage = () => {
       <section className="relative h-80 flex items-end overflow-hidden">
         <img
           src="/learn-hero.jpg"
-          alt="학습하기"
+          alt={copy.learn.title}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/60" />
         <div className={`relative z-10 p-8 sm:p-12 w-full transition-all duration-700 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
           <span className="inline-block text-xs font-bold px-3 py-1 rounded-full bg-primary/80 text-white mb-3">
-            📚 전체 커리큘럼
+            {copy.learn.heroBadge}
           </span>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white">
-            학습하기
-          </h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white">{copy.learn.title}</h1>
           <p className="mt-2 text-white/80 text-sm max-w-xl">
-            Learn Prompting의 핵심 개념과 실전형 프롬프팅 방법을 단계적으로 학습해보세요.
+            {copy.learn.heroDescription}
           </p>
         </div>
       </section>
@@ -158,9 +95,9 @@ const LearnPage = () => {
       <section className="section-padding korean-bg steps-section">
         <div className="container-main">
           <div className={`transition-all duration-700 ${stepsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <h2 className="text-2xl font-bold text-foreground">학습 여정</h2>
+            <h2 className="text-2xl font-bold text-foreground">{copy.learn.journeyTitle}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              단계별로 차근차근 따라오세요
+              {copy.learn.journeyDescription}
             </p>
 
             {/* steps row */}
@@ -188,11 +125,11 @@ const LearnPage = () => {
               <div className="flex items-center gap-3">
                 <Lock className="h-5 w-5 text-primary" />
                 <p className="text-sm text-foreground font-medium">
-                  로그인하면 모든 레벨의 학습을 시작할 수 있습니다.
+                  {copy.learn.loginBanner}
                 </p>
               </div>
               <Link to="/login">
-                <Button size="sm">로그인하기</Button>
+                <Button size="sm">{copy.learn.loginCta}</Button>
               </Link>
             </div>
           )}
@@ -202,9 +139,9 @@ const LearnPage = () => {
       {/* ── Level Cards with Photos ── */}
       <section className="section-padding bg-card">
         <div className="container-main">
-          <h2 className="text-2xl font-bold text-foreground mb-2">전체 레벨</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">{copy.learn.levelsTitle}</h2>
           <p className="text-sm text-muted-foreground mb-8">
-            각 레벨을 클릭하여 학습을 시작하세요
+            {copy.learn.levelsDescription}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -231,7 +168,7 @@ const LearnPage = () => {
                   <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] z-10 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-2">
                       <Lock className="h-7 w-7 text-white" />
-                      <span className="text-xs text-white/80 font-medium">로그인 필요</span>
+                      <span className="text-xs text-white/80 font-medium">{copy.learn.loginRequired}</span>
                     </div>
                   </div>
                 )}
@@ -270,7 +207,7 @@ const LearnPage = () => {
                         className="mt-4 bg-white text-gray-800 hover:bg-white/90 font-semibold"
                       >
                         <CheckCircle className="h-4 w-4 mr-1" />
-                        학습 시작
+                        {copy.learn.startButton}
                       </Button>
                     ) : (
                       <Link to="/login">
@@ -279,7 +216,7 @@ const LearnPage = () => {
                           variant="outline"
                           className="mt-4 text-black border-white bg-white hover:bg-white/80"
                         >
-                          로그인 후 이용
+                          {copy.learn.loginToAccessButton}
                         </Button>
                       </Link>
                     )}
@@ -294,26 +231,20 @@ const LearnPage = () => {
       {/* ── CTA Section ── */}
       <section className="section-padding korean-bg">
         <div className="container-main text-center max-w-xl mx-auto">
-          <h2 className="text-2xl font-bold text-foreground">
-            어디서부터 시작해야 할지 모르겠나요?
-          </h2>
+          <h2 className="text-2xl font-bold text-foreground">{copy.learn.ctaTitle}</h2>
           <p className="mt-3 text-sm text-muted-foreground">
-            나에게 맞는 학습 경로를 먼저 확인해보세요.
+            {copy.learn.ctaDescription}
           </p>
           <div className="mt-6 flex justify-center gap-3 flex-wrap">
-            <Link to="/student">
-              <Button size="lg" variant="outline">🎓 학생</Button>
-            </Link>
-            <Link to="/job-seeker">
-              <Button size="lg" variant="outline">💼 취업준비생</Button>
-            </Link>
-            <Link to="/employee">
-              <Button size="lg" variant="outline">🏢 직장인</Button>
-            </Link>
+            {copy.learn.personaButtons.map((item) => (
+              <Link key={item.path} to={item.path}>
+                <Button size="lg" variant="outline">{item.label}</Button>
+              </Link>
+            ))}
           </div>
           <div className="mt-4">
             <Link to="/roadmap">
-              <Button size="lg">📅 로드맵 보기</Button>
+              <Button size="lg">{copy.learn.roadmapButton}</Button>
             </Link>
           </div>
         </div>
