@@ -3,18 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-
-const navItems = [
-  { label: "학습하기", path: "/learn" },
-  { label: "로드맵", path: "/roadmap" },
-  { label: "인증 확인", path: "/verify" },
-];
-
-const personaItems = [
-  { label: "🎓 학생", path: "/student", desc: "과제, 발표, 학습 정리" },
-  { label: "💼 취업준비생", path: "/job-seeker", desc: "자기소개서, 면접 준비" },
-  { label: "🏢 직장인", path: "/employee", desc: "회의 요약, 업무 자동화" },
-];
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useI18n } from "@/context/I18nContext";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -25,6 +15,9 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isLoggedIn, signOut, user } = useAuth();
+  const { copy } = useI18n();
+  const navItems = copy.navbar.navItems;
+  const personaItems = copy.navbar.personaMenu.items;
 
   const handleLogout = () => {
     signOut();
@@ -36,15 +29,16 @@ const Navbar = () => {
   const displayName =
     user?.firstName && user?.lastName
       ? `${user.firstName} ${user.lastName}`
-      : user?.email?.split("@")[0] || "사용자";
+      : user?.email?.split("@")[0] || copy.navbar.roles.userFallback;
 
   const displayRole =
-    user?.role === "student" ? "학생"
-    : user?.role === "job-seeker" ? "취업준비생"
-    : user?.role === "employee" ? "직장인"
-    : user?.role === "other" ? "기타"
-    : "회원";
+    user?.role === "student" ? copy.navbar.roles.student
+    : user?.role === "job-seeker" ? copy.navbar.roles["job-seeker"]
+    : user?.role === "employee" ? copy.navbar.roles.employee
+    : user?.role === "other" ? copy.navbar.roles.other
+    : copy.navbar.roles.member;
 
+  // close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (personaRef.current && !personaRef.current.contains(e.target as Node)) {
@@ -58,10 +52,10 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // close dropdowns on route change
   useEffect(() => {
     setPersonaOpen(false);
     setUserDropdownOpen(false);
-    setOpen(false);
   }, [location.pathname]);
 
   const isPersonaActive = ["/student", "/job-seeker", "/employee"].includes(location.pathname);
@@ -71,7 +65,7 @@ const Navbar = () => {
       <div className="container-main flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
 
         <Link to="/" className="flex items-center gap-2">
-          <span className="text-lg font-bold text-primary">Learn Prompting Korea</span>
+          <span className="text-lg font-bold text-primary">{copy.navbar.brand}</span>
         </Link>
 
         {/* desktop nav */}
@@ -100,14 +94,14 @@ const Navbar = () => {
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
-              활용 예시
+              {copy.navbar.personaMenu.label}
               <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${personaOpen ? "rotate-180" : ""}`} />
             </button>
 
             {personaOpen && (
               <div className="absolute top-full left-0 mt-1 w-52 bg-card border rounded-xl shadow-lg overflow-hidden z-50">
                 <div className="px-4 py-2 border-b">
-                  <p className="text-xs text-muted-foreground font-medium">나의 경로 선택</p>
+                  <p className="text-xs text-muted-foreground font-medium">{copy.navbar.personaMenu.header}</p>
                 </div>
                 {personaItems.map((item) => (
                   <Link
@@ -126,7 +120,9 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* auth */}
+          <LanguageSwitcher className="ml-3" />
+
+          {/* auth section */}
           {isLoggedIn ? (
             <div className="ml-4 flex items-center gap-3">
               <div className="relative" ref={userRef}>
@@ -150,17 +146,32 @@ const Navbar = () => {
                       <p className="text-sm font-semibold text-foreground">{displayName}</p>
                       <p className="text-xs text-muted-foreground">{displayRole}</p>
                     </div>
-                    <Link to="/dashboard" onClick={() => setUserDropdownOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors">
-                      🏠 마이페이지
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
+                    >
+                      {copy.navbar.auth.dashboard}
                     </Link>
-                    <Link to="/analytics" onClick={() => setUserDropdownOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors">
-                      📊 분석
+                    <Link
+                      to="/analytics"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
+                    >
+                      {copy.navbar.auth.analytics}
                     </Link>
-                    <Link to="/playground" onClick={() => setUserDropdownOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors">
-                      🤖 플레이그라운드
+                    <Link
+                      to="/playground"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
+                    >
+                      {copy.navbar.auth.playground}
                     </Link>
-                    <button onClick={handleLogout} className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors border-t">
-                      🚪 로그아웃
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors border-t"
+                    >
+                      {copy.navbar.auth.logout}
                     </button>
                   </div>
                 )}
@@ -169,10 +180,10 @@ const Navbar = () => {
           ) : (
             <div className="ml-4 flex items-center gap-2">
               <Link to="/login">
-                <Button size="sm" variant="outline">로그인</Button>
+                <Button size="sm" variant="outline">{copy.navbar.auth.login}</Button>
               </Link>
               <Link to="/sign-up">
-                <Button size="sm">회원가입</Button>
+                <Button size="sm">{copy.navbar.auth.signUp}</Button>
               </Link>
             </div>
           )}
@@ -212,8 +223,12 @@ const Navbar = () => {
             </Link>
           ))}
 
+          {/* mobile persona links */}
           <div className="py-2 border-b border-border/50">
-            <p className="text-xs text-muted-foreground font-medium py-2">활용 예시</p>
+            <div className="py-2">
+              <LanguageSwitcher />
+            </div>
+            <p className="text-xs text-muted-foreground font-medium py-2">{copy.navbar.personaMenu.label}</p>
             {personaItems.map((item) => (
               <Link
                 key={item.path}
@@ -231,25 +246,25 @@ const Navbar = () => {
           {isLoggedIn ? (
             <div className="mt-3 space-y-2">
               <Link to="/dashboard" onClick={() => setOpen(false)} className="block">
-                <Button className="w-full" size="sm" variant="outline">🏠 마이페이지</Button>
+                <Button className="w-full" size="sm" variant="outline">{copy.navbar.auth.dashboard}</Button>
               </Link>
               <Link to="/analytics" onClick={() => setOpen(false)} className="block">
-                <Button className="w-full" size="sm" variant="outline">📊 분석</Button>
+                <Button className="w-full" size="sm" variant="outline">{copy.navbar.auth.analytics}</Button>
               </Link>
               <Link to="/playground" onClick={() => setOpen(false)} className="block">
-                <Button className="w-full" size="sm" variant="outline">🤖 플레이그라운드</Button>
+                <Button className="w-full" size="sm" variant="outline">{copy.navbar.auth.playground}</Button>
               </Link>
               <Button className="w-full" size="sm" onClick={handleLogout}>
-                🚪 로그아웃
+                {copy.navbar.auth.logout}
               </Button>
             </div>
           ) : (
             <div className="mt-3 space-y-2">
               <Link to="/login" onClick={() => setOpen(false)} className="block">
-                <Button className="w-full" size="sm" variant="outline">로그인</Button>
+                <Button className="w-full" size="sm" variant="outline">{copy.navbar.auth.login}</Button>
               </Link>
               <Link to="/sign-up" onClick={() => setOpen(false)} className="block">
-                <Button className="w-full" size="sm">회원가입</Button>
+                <Button className="w-full" size="sm">{copy.navbar.auth.signUp}</Button>
               </Link>
             </div>
           )}
