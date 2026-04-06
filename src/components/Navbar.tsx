@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { useSidebar } from "@/context/SidebarContext";
 
 const navItems = [
   { label: "학습하기", path: "/learn" },
@@ -18,7 +17,6 @@ const personaItems = [
 ];
 
 const Navbar = () => {
-  const { setSidebarOpen } = useSidebar();
   const [open, setOpen] = useState(false);
   const [personaOpen, setPersonaOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -72,21 +70,9 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="container-main flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
 
-        {/* left side — hamburger + logo */}
-        <div className="flex items-center gap-3">
-          {/* sidebar hamburger — always visible */}
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-muted transition-colors"
-            aria-label="메뉴 열기"
-          >
-            <Menu className="h-5 w-5 text-muted-foreground" />
-          </button>
-
-          <Link to="/" className="flex items-center gap-2">
-            <span className="text-lg font-bold text-primary">Learn Prompting Korea</span>
-          </Link>
-        </div>
+        <Link to="/" className="flex items-center gap-2">
+          <span className="text-lg font-bold text-primary">Learn Prompting Korea</span>
+        </Link>
 
         {/* desktop nav */}
         <div className="hidden md:flex items-center gap-1">
@@ -192,13 +178,13 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* mobile right side */}
+        {/* mobile hamburger */}
         <button className="md:hidden p-2" onClick={() => setOpen(!open)}>
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
-      {/* mobile dropdown menu */}
+      {/* mobile menu */}
       {open && (
         <div className="md:hidden border-t bg-card px-4 pb-4">
           {isLoggedIn && (
