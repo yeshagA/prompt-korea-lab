@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import { useSidebar } from "@/context/SidebarContext";
 
 const navItems = [
   { label: "학습하기", path: "/learn" },
@@ -17,6 +18,7 @@ const personaItems = [
 ];
 
 const Navbar = () => {
+  const { setSidebarOpen } = useSidebar();
   const [open, setOpen] = useState(false);
   const [personaOpen, setPersonaOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -45,7 +47,6 @@ const Navbar = () => {
     : user?.role === "other" ? "기타"
     : "회원";
 
-  // close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (personaRef.current && !personaRef.current.contains(e.target as Node)) {
@@ -59,10 +60,10 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // close dropdowns on route change
   useEffect(() => {
     setPersonaOpen(false);
     setUserDropdownOpen(false);
+    setOpen(false);
   }, [location.pathname]);
 
   const isPersonaActive = ["/student", "/job-seeker", "/employee"].includes(location.pathname);
@@ -71,9 +72,21 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="container-main flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
 
-        <Link to="/" className="flex items-center gap-2">
-          <span className="text-lg font-bold text-primary">Learn Prompting Korea</span>
-        </Link>
+        {/* left side — hamburger + logo */}
+        <div className="flex items-center gap-3">
+          {/* sidebar hamburger — always visible */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-lg hover:bg-muted transition-colors"
+            aria-label="메뉴 열기"
+          >
+            <Menu className="h-5 w-5 text-muted-foreground" />
+          </button>
+
+          <Link to="/" className="flex items-center gap-2">
+            <span className="text-lg font-bold text-primary">Learn Prompting Korea</span>
+          </Link>
+        </div>
 
         {/* desktop nav */}
         <div className="hidden md:flex items-center gap-1">
@@ -127,7 +140,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* auth section */}
+          {/* auth */}
           {isLoggedIn ? (
             <div className="ml-4 flex items-center gap-3">
               <div className="relative" ref={userRef}>
@@ -151,31 +164,16 @@ const Navbar = () => {
                       <p className="text-sm font-semibold text-foreground">{displayName}</p>
                       <p className="text-xs text-muted-foreground">{displayRole}</p>
                     </div>
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
-                    >
+                    <Link to="/dashboard" onClick={() => setUserDropdownOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors">
                       🏠 마이페이지
                     </Link>
-                    <Link
-                      to="/analytics"
-                      onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
-                    >
+                    <Link to="/analytics" onClick={() => setUserDropdownOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors">
                       📊 분석
                     </Link>
-                    <Link
-                      to="/playground"
-                      onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
-                    >
+                    <Link to="/playground" onClick={() => setUserDropdownOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors">
                       🤖 플레이그라운드
                     </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors border-t"
-                    >
+                    <button onClick={handleLogout} className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors border-t">
                       🚪 로그아웃
                     </button>
                   </div>
@@ -194,13 +192,13 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* mobile hamburger */}
+        {/* mobile right side */}
         <button className="md:hidden p-2" onClick={() => setOpen(!open)}>
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
-      {/* mobile menu */}
+      {/* mobile dropdown menu */}
       {open && (
         <div className="md:hidden border-t bg-card px-4 pb-4">
           {isLoggedIn && (
@@ -228,7 +226,6 @@ const Navbar = () => {
             </Link>
           ))}
 
-          {/* mobile persona links */}
           <div className="py-2 border-b border-border/50">
             <p className="text-xs text-muted-foreground font-medium py-2">활용 예시</p>
             {personaItems.map((item) => (
