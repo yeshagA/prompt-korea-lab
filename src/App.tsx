@@ -23,6 +23,8 @@ import ExamplesPage from "./pages/ExamplesPage";
 import VerifyPage from "./pages/VerifyPage";
 import ReviewerPage from "./pages/ReviewerPage";
 import NotFound from "./pages/NotFound";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +55,8 @@ const App = () => (
               <Route path="/verify" element={<VerifyPage />} />
               <Route path="/reviewer" element={<ReviewerPage />} />
               <Route path="*" element={<NotFound />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
             </Routes>
           </BrowserRouter>
         </AuthProvider>

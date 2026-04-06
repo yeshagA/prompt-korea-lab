@@ -3,21 +3,19 @@ import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useI18n } from "@/context/I18nContext";
+import { useSidebar } from "@/context/SidebarContext";
 
 const Navbar = () => {
+  const { setSidebarOpen } = useSidebar();
   const [open, setOpen] = useState(false);
-  const [personaOpen, setPersonaOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const personaRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { isLoggedIn, signOut, user } = useAuth();
   const { copy } = useI18n();
   const navItems = copy.navbar.navItems;
-  const personaItems = copy.navbar.personaMenu.items;
 
   const handleLogout = () => {
     signOut();
@@ -38,12 +36,8 @@ const Navbar = () => {
     : user?.role === "other" ? copy.navbar.roles.other
     : copy.navbar.roles.member;
 
-  // close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (personaRef.current && !personaRef.current.contains(e.target as Node)) {
-        setPersonaOpen(false);
-      }
       if (userRef.current && !userRef.current.contains(e.target as Node)) {
         setUserDropdownOpen(false);
       }
@@ -52,21 +46,28 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // close dropdowns on route change
   useEffect(() => {
-    setPersonaOpen(false);
     setUserDropdownOpen(false);
+    setOpen(false);
   }, [location.pathname]);
-
-  const isPersonaActive = ["/student", "/job-seeker", "/employee"].includes(location.pathname);
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="container-main flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
 
-        <Link to="/" className="flex items-center gap-2">
-          <span className="text-lg font-bold text-primary">{copy.navbar.brand}</span>
-        </Link>
+        {/* left — hamburger + logo */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-lg hover:bg-muted transition-colors"
+            aria-label="메뉴 열기"
+          >
+            <Menu className="h-5 w-5 text-muted-foreground" />
+          </button>
+          <Link to="/" className="flex items-center gap-2">
+            <span className="text-lg font-bold text-primary">{copy.navbar.brand}</span>
+          </Link>
+        </div>
 
         {/* desktop nav */}
         <div className="hidden md:flex items-center gap-1">
@@ -84,45 +85,7 @@ const Navbar = () => {
             </Link>
           ))}
 
-          {/* 활용 예시 dropdown */}
-          <div className="relative" ref={personaRef}>
-            <button
-              onClick={() => setPersonaOpen(!personaOpen)}
-              className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                isPersonaActive
-                  ? "text-primary bg-primary/5"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              }`}
-            >
-              {copy.navbar.personaMenu.label}
-              <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${personaOpen ? "rotate-180" : ""}`} />
-            </button>
-
-            {personaOpen && (
-              <div className="absolute top-full left-0 mt-1 w-52 bg-card border rounded-xl shadow-lg overflow-hidden z-50">
-                <div className="px-4 py-2 border-b">
-                  <p className="text-xs text-muted-foreground font-medium">{copy.navbar.personaMenu.header}</p>
-                </div>
-                {personaItems.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setPersonaOpen(false)}
-                    className={`flex flex-col px-4 py-3 hover:bg-muted transition-colors ${
-                      location.pathname === item.path ? "bg-primary/5 text-primary" : ""
-                    }`}
-                  >
-                    <span className="text-sm font-semibold text-foreground">{item.label}</span>
-                    <span className="text-xs text-muted-foreground mt-0.5">{item.desc}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <LanguageSwitcher className="ml-3" />
-
-          {/* auth section */}
+          {/* auth */}
           {isLoggedIn ? (
             <div className="ml-4 flex items-center gap-3">
               <div className="relative" ref={userRef}>
@@ -195,7 +158,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* mobile menu */}
+      {/* mobile dropdown */}
       {open && (
         <div className="md:hidden border-t bg-card px-4 pb-4">
           {isLoggedIn && (
@@ -223,36 +186,22 @@ const Navbar = () => {
             </Link>
           ))}
 
-          {/* mobile persona links */}
-          <div className="py-2 border-b border-border/50">
-            <div className="py-2">
-              <LanguageSwitcher />
-            </div>
-            <p className="text-xs text-muted-foreground font-medium py-2">{copy.navbar.personaMenu.label}</p>
-            {personaItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setOpen(false)}
-                className={`block py-2 pl-3 text-sm font-medium ${
-                  location.pathname === item.path ? "text-primary" : "text-muted-foreground"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-
           {isLoggedIn ? (
             <div className="mt-3 space-y-2">
               <Link to="/dashboard" onClick={() => setOpen(false)} className="block">
-                <Button className="w-full" size="sm" variant="outline">{copy.navbar.auth.dashboard}</Button>
+                <Button className="w-full" size="sm" variant="outline">
+                  {copy.navbar.auth.dashboard}
+                </Button>
               </Link>
               <Link to="/analytics" onClick={() => setOpen(false)} className="block">
-                <Button className="w-full" size="sm" variant="outline">{copy.navbar.auth.analytics}</Button>
+                <Button className="w-full" size="sm" variant="outline">
+                  {copy.navbar.auth.analytics}
+                </Button>
               </Link>
               <Link to="/playground" onClick={() => setOpen(false)} className="block">
-                <Button className="w-full" size="sm" variant="outline">{copy.navbar.auth.playground}</Button>
+                <Button className="w-full" size="sm" variant="outline">
+                  {copy.navbar.auth.playground}
+                </Button>
               </Link>
               <Button className="w-full" size="sm" onClick={handleLogout}>
                 {copy.navbar.auth.logout}
@@ -261,7 +210,9 @@ const Navbar = () => {
           ) : (
             <div className="mt-3 space-y-2">
               <Link to="/login" onClick={() => setOpen(false)} className="block">
-                <Button className="w-full" size="sm" variant="outline">{copy.navbar.auth.login}</Button>
+                <Button className="w-full" size="sm" variant="outline">
+                  {copy.navbar.auth.login}
+                </Button>
               </Link>
               <Link to="/sign-up" onClick={() => setOpen(false)} className="block">
                 <Button className="w-full" size="sm">{copy.navbar.auth.signUp}</Button>

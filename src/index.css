@@ -8,34 +8,25 @@
   :root {
     --background: 210 40% 98%;
     --foreground: 215 28% 17%;
-
     --card: 0 0% 100%;
     --card-foreground: 215 28% 17%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 215 28% 17%;
-
     --primary: 214 100% 40%;
     --primary-foreground: 0 0% 100%;
-
     --secondary: 210 40% 96%;
     --secondary-foreground: 215 28% 17%;
-
     --muted: 210 20% 95%;
     --muted-foreground: 215 16% 47%;
-
     --accent: 160 84% 39%;
     --accent-foreground: 0 0% 100%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 214 100% 40%;
-
     --radius: 0.75rem;
-
+    --korean-bg: 210 40% 96%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -44,6 +35,30 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* ── Dark Mode ── */
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 14%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 214 100% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 33% 22%;
+    --input: 217 33% 22%;
+    --ring: 214 100% 60%;
+    --korean-bg: 222 47% 13%;
   }
 }
 
@@ -85,27 +100,15 @@
   transform: translateY(0);
 }
 
-/* ── Persona Cards Scroll Animation ── */
-.persona-card {
-  opacity: 0;
-  transform: translateY(2rem);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.card-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 /* ── Bee floating animation ── */
 @keyframes beeFloat {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-6px); }
 }
 
-/* ── Korean stone background ── */
+/* ── Korean stone background — dark mode aware ── */
 .korean-bg {
-  background-color: #F5F4F0;
+  background-color: hsl(var(--korean-bg));
 }
 
 /* ── Course flip cards ── */
@@ -141,17 +144,6 @@
 }
 
 /* ── Flying Bee ── */
-.flying-bee {
-  position: fixed;
-  z-index: 999;
-  pointer-events: none;
-  width: 48px;
-  height: 48px;
-  top: 30%;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-  animation: beeFloat 2s ease-in-out infinite;
-}
-
 @keyframes beeCrossRight {
   0%   { left: -80px;  transform: scaleX(1); }
   100% { left: 110%;   transform: scaleX(1); }
