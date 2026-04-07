@@ -100,11 +100,6 @@
   transform: translateY(0);
 }
 
-/* ── Bee floating animation ── */
-@keyframes beeFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-}
 
 /* ── Korean stone background — dark mode aware ── */
 .korean-bg {
@@ -141,20 +136,4 @@
 
 .flip-card-back {
   transform: rotateY(180deg);
-}
-
-/* ── Flying Bee ── */
-@keyframes beeCrossRight {
-  0%   { left: -80px;  transform: scaleX(1); }
-  100% { left: 110%;   transform: scaleX(1); }
-}
-
-@keyframes beeCrossLeft {
-  0%   { left: 110%;   transform: scaleX(-1); }
-  100% { left: -80px;  transform: scaleX(-1); }
-}
-
-@keyframes beeFloat {
-  0%, 100% { margin-top: 0px; }
-  50%       { margin-top: -8px; }
 }

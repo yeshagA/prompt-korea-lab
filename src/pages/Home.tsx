@@ -277,7 +277,7 @@ const Home = () => {
     );
     cards.forEach((card) => observer.observe(card));
     return () => observer.disconnect();
-  }, []);
+  }, [locale]);
 
   // 4. playground typing — unchanged
   useEffect(() => {
@@ -336,20 +336,34 @@ const Home = () => {
     return () => { observer.disconnect(); clearTimeout(typingTimeout); clearInterval(cursorInterval); };
   }, [copy.home.playground.demoPrompt, copy.home.playground.demoResponse]);
 
-  // 5. generic scroll reveals
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const id = (entry.target as HTMLElement).dataset.observe;
-          if (id && entry.isIntersecting) setVisible((p) => ({ ...p, [id]: true }));
-        });
-      },
-      { threshold: 0.1 }
-    );
-    document.querySelectorAll("[data-observe]").forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+// 5. generic scroll reveals
+useEffect(() => {
+  setVisible({});
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const id = (entry.target as HTMLElement).dataset.observe;
+        if (id && entry.isIntersecting) setVisible((p) => ({ ...p, [id]: true }));
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  const elements = document.querySelectorAll("[data-observe]");
+  elements.forEach((el) => observer.observe(el));
+
+  // Immediately reveal elements already in the viewport
+  elements.forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    if (inView) {
+      const id = (el as HTMLElement).dataset.observe;
+      if (id) setVisible((p) => ({ ...p, [id]: true }));
+    }
+  });
+
+  return () => observer.disconnect();
+}, [locale]);
 
   const fadeIn = (id: string, delay = 0) =>
     `transition-all duration-700 ${delay ? `delay-[${delay}ms]` : ""} ${
