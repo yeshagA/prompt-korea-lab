@@ -178,7 +178,7 @@ const ReviewerPage = () => {
             </TabsList>
 
             <TabsContent value="guides" className="space-y-4">
-              {copy.reviewer.guides.length === 0 ? (
+              {(copy.reviewer.guides as unknown[]).length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-border py-16 text-center text-sm text-muted-foreground">
                   {copy.reviewer.emptyState}
                 </div>
@@ -188,7 +188,7 @@ const ReviewerPage = () => {
             </TabsContent>
 
             <TabsContent value="courses" className="space-y-4">
-              {copy.reviewer.courses.length === 0 ? (
+              {(copy.reviewer.guides as unknown[]).length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-border py-16 text-center text-sm text-muted-foreground">
                   {copy.reviewer.emptyState}
                 </div>

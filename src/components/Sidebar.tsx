@@ -12,20 +12,14 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const Sidebar = () => {
   const { sidebarOpen, setSidebarOpen, theme, toggleTheme } = useSidebar();
-  const { isLoggedIn, signOut, user, updateProfile } = useAuth();
+  const { isLoggedIn, signOut, user } = useAuth();
   const { copy, locale } = useI18n();
   const location = useLocation();
   const navigate = useNavigate();
 
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [activePanel, setActivePanel] = useState<null | "account" | "notifications">(null);
+  const [activePanel, setActivePanel] = useState<null | "notifications">(null);
 
-  const [editFirstName, setEditFirstName] = useState(user?.firstName || "");
-  const [editLastName, setEditLastName] = useState(user?.lastName || "");
-  const [editRole, setEditRole] = useState(user?.role || "student");
-  const [saved, setSaved] = useState(false);
-
-  // notification toggles
   const [notifLearning, setNotifLearning] = useState(true);
   const [notifNewContent, setNotifNewContent] = useState(true);
   const [notifCert, setNotifCert] = useState(false);
@@ -48,16 +42,6 @@ const Sidebar = () => {
     navigate("/");
   };
 
-  const handleSaveProfile = () => {
-    updateProfile({
-      firstName: editFirstName,
-      lastName: editLastName,
-      role: editRole as "student" | "job-seeker" | "employee" | "other",
-    });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
-
   const close = () => {
     setSidebarOpen(false);
     setActivePanel(null);
@@ -74,22 +58,7 @@ const Sidebar = () => {
     privacy: locale === "ko" ? "개인정보 처리방침" : "Privacy policy",
     terms: locale === "ko" ? "이용약관" : "Terms of use",
     back: locale === "ko" ? "← 뒤로" : "← Back",
-    accountSettings: locale === "ko" ? "👤 계정 설정" : "👤 Account settings",
-    notifSettings: locale === "ko" ? "🔔 알림 설정" : "🔔 Notification settings",
-    loginRequired: locale === "ko" ? "로그인이 필요합니다." : "Login required.",
-    email: locale === "ko" ? "이메일" : "Email",
-    emailReadonly: locale === "ko" ? "이메일은 변경할 수 없습니다" : "Email cannot be changed",
-    firstName: locale === "ko" ? "이름 (First Name)" : "First Name",
-    lastName: locale === "ko" ? "성 (Last Name)" : "Last Name",
-    userType: locale === "ko" ? "사용자 유형" : "User type",
-    saveChanges: locale === "ko" ? "변경사항 저장" : "Save changes",
-    savedMsg: locale === "ko" ? "✅ 저장됨!" : "✅ Saved!",
-    roles: {
-      student: locale === "ko" ? "🎓 학생" : "🎓 Student",
-      jobSeeker: locale === "ko" ? "💼 취업준비생" : "💼 Job Seeker",
-      employee: locale === "ko" ? "🏢 직장인" : "🏢 Employee",
-      other: locale === "ko" ? "👤 기타" : "👤 Other",
-    },
+    notifSettings: locale === "ko" ? "알림 설정" : "Notification settings",
     notifItems: [
       {
         key: "learning",
@@ -124,17 +93,17 @@ const Sidebar = () => {
 
   const personaLinks = [
     {
-      label: locale === "ko" ? "🎓 학생" : "🎓 Student",
+      label: locale === "ko" ? "학생" : "Student",
       path: "/student",
       desc: locale === "ko" ? "과제, 발표, 학습 정리" : "Assignments, presentations",
     },
     {
-      label: locale === "ko" ? "💼 취업준비생" : "💼 Job Seeker",
+      label: locale === "ko" ? "취업준비생" : "Job Seeker",
       path: "/job-seeker",
       desc: locale === "ko" ? "자기소개서, 면접 준비" : "Resumes, interviews",
     },
     {
-      label: locale === "ko" ? "🏢 직장인" : "🏢 Employee",
+      label: locale === "ko" ? "직장인" : "Employee",
       path: "/employee",
       desc: locale === "ko" ? "회의 요약, 업무 자동화" : "Meeting notes, automation",
     },
@@ -160,102 +129,22 @@ const Sidebar = () => {
 
         {/* user info */}
         {isLoggedIn && (
-          <div className="px-5 py-3 border-b bg-primary/5">
+          <Link to="/account" onClick={close} className="px-5 py-3 border-b bg-primary/5 hover:bg-primary/10 transition-colors">
             <div className="flex items-center gap-3">
               <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <User className="h-4 w-4 text-primary" />
               </div>
-              <div>
-                <p className="text-sm font-bold text-foreground">{displayName}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-foreground truncate">{displayName}</p>
                 <p className="text-xs text-muted-foreground">{displayRole}</p>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
             </div>
-          </div>
+          </Link>
         )}
 
         {/* scrollable content */}
         <div className="flex-1 overflow-y-auto">
-
-          {/* ── Account panel ── */}
-          {activePanel === "account" && (
-            <div className="px-5 py-4">
-              <button
-                onClick={() => setActivePanel(null)}
-                className="flex items-center gap-1 text-xs text-muted-foreground mb-4 hover:text-foreground"
-              >
-                {labels.back}
-              </button>
-              <h3 className="text-sm font-bold text-foreground mb-4">{labels.accountSettings}</h3>
-
-              {!isLoggedIn ? (
-                <div className="text-center py-8">
-                  <p className="text-sm text-muted-foreground mb-4">{labels.loginRequired}</p>
-                  <Link to="/login" onClick={close} className="inline-block bg-primary text-white text-sm px-4 py-2 rounded-lg hover:opacity-90">
-                    {copy.navbar.auth.login}
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground">{labels.email}</label>
-                    <div className="mt-1 rounded-lg border bg-muted px-3 py-2 text-sm text-muted-foreground">
-                      {user?.email}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">{labels.emailReadonly}</p>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground">{labels.firstName}</label>
-                    <input
-                      type="text"
-                      value={editFirstName}
-                      onChange={(e) => setEditFirstName(e.target.value)}
-                      className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground">{labels.lastName}</label>
-                    <input
-                      type="text"
-                      value={editLastName}
-                      onChange={(e) => setEditLastName(e.target.value)}
-                      className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground">{labels.userType}</label>
-                    <select
-                      value={editRole}
-                      onChange={(e) => setEditRole(e.target.value as "student" | "job-seeker" | "employee" | "other")}
-                      className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    >
-                      <option value="student">{labels.roles.student}</option>
-                      <option value="job-seeker">{labels.roles.jobSeeker}</option>
-                      <option value="employee">{labels.roles.employee}</option>
-                      <option value="other">{labels.roles.other}</option>
-                    </select>
-                  </div>
-
-                  <button
-                    onClick={handleSaveProfile}
-                    className="w-full bg-primary text-white text-sm py-2.5 rounded-lg hover:opacity-90 transition-opacity font-medium"
-                  >
-                    {saved ? labels.savedMsg : labels.saveChanges}
-                  </button>
-
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 border border-red-200 text-red-500 text-sm py-2.5 rounded-lg hover:bg-red-50 transition-colors"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    {copy.navbar.auth.logout}
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
 
           {/* ── Notifications panel ── */}
           {activePanel === "notifications" && (
@@ -292,7 +181,7 @@ const Sidebar = () => {
             </div>
           )}
 
-          {/* ── Main content — persona links ── */}
+          {/* ── Main — persona links ── */}
           {!activePanel && (
             <div className="py-4 px-5">
               <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
@@ -379,31 +268,34 @@ const Sidebar = () => {
                   {labels.notifications}
                 </button>
 
-                {/* account */}
-                <button
-                  onClick={() => {
-                    if (!isLoggedIn) {
-                      navigate("/login");
-                      close();
-                    } else {
-                      setActivePanel("account");
-                      setSettingsOpen(false);
-                    }
-                  }}
+                {/* account — links to page */}
+                <Link
+                  to="/account"
+                  onClick={close}
                   className="w-full flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1"
                 >
                   <User className="h-4 w-4 text-muted-foreground" />
                   {labels.account}
-                </button>
+                </Link>
 
               </div>
             )}
 
-            {/* privacy & terms */}
+            {/* logout if logged in */}
+            {isLoggedIn && (
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-5 py-3 text-xs text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors border-t"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                {copy.navbar.auth.logout}
+              </button>
+            )}
+
             <Link
               to="/privacy"
               onClick={close}
-              className="flex items-center gap-3 px-5 py-3 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              className="flex items-center gap-3 px-5 py-3 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors border-t"
             >
               <Shield className="h-3.5 w-3.5" />
               {labels.privacy}
@@ -418,9 +310,7 @@ const Sidebar = () => {
             </Link>
 
             <div className="px-5 py-2 border-t">
-              <p className="text-xs text-muted-foreground text-center">
-                © 2026 Bee Intelligence Global
-              </p>
+              <p className="text-xs text-muted-foreground text-center">© 2026 Learn Prompting</p>
             </div>
           </div>
         )}

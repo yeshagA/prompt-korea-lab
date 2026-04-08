@@ -61,6 +61,11 @@ const LoginPage = () => {
             <Button type="submit" className="w-full">
               로그인
             </Button>
+            <div className="text-right">
+            <Link to="/reset-password" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+              비밀번호를 잊으셨나요?
+            </Link>
+            </div>
           </form>
 
           <p className="mt-4 text-sm text-center text-muted-foreground">
